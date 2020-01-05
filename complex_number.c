@@ -6,13 +6,13 @@
 /*   By: mdirect <mdirect@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/21 13:37:20 by mdirect           #+#    #+#             */
-/*   Updated: 2019/12/21 13:39:38 by mdirect          ###   ########.fr       */
+/*   Updated: 2020/01/05 16:37:31 by mdirect          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
 
-t_complex_num		make_complex(double im, double re)
+t_complex_num		make_complex(double re, double im)
 {
 	t_complex_num number;
 
@@ -23,5 +23,5 @@ t_complex_num		make_complex(double im, double re)
 
 double				modul_complex(t_complex_num number)
 {
-	return (number.im *  number.im + number.re * number.re);
+	return (number.re * number.re + number.im *  number.im);
 }
