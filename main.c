@@ -6,23 +6,31 @@
 /*   By: mdirect <mdirect@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/21 12:41:49 by mdirect           #+#    #+#             */
-/*   Updated: 2019/12/21 14:44:23 by mdirect          ###   ########.fr       */
+/*   Updated: 2020/01/08 16:00:02 by mdirect          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
 
-int 	main(void)
+int		main(int argc, char **argv)
 {
-	t_param_window win;
+	t_fractol f;
 
-	win.mlx = mlx_init();
-	win.window = mlx_new_window(win.mlx, SIZE_WIN_X, SIZE_WIN_Y, "fract'ol");
-	win.img = mlx_new_image(win.mlx, SIZE_WIN_X, SIZE_WIN_Y);
-	mlx_put_image_to_window(win.mlx, win.window, win.img, 0, 0);
-	mlx_string_put(win.mlx, win.window, 20, 10, 0xffffff, "Fract'ol");
-	draw_fractol(win);
-	mlx_hook(win.window, 2, 0, push_key, win.mlx);
-	mlx_loop(win.mlx);
+	if (argc == 1)
+		return (ft_usage());
+	else if (argc == 2)
+		f.type = ft_parce_fractol(argv[1]);
+	else
+		return (write(1, "many parametrs\n", 15));
+	f.win.mlx = mlx_init();
+	f.win.window = mlx_new_window(f.win.mlx, WIN_X, WIN_Y, "fract'ol");
+	f.win.img = mlx_new_image(f.win.mlx, WIN_X, WIN_Y);
+	f.max_i = 100;
+	f.x = -2.0;
+	f.y = -2.0;
+	mlx_put_image_to_window(f.win.mlx, f.win.window, f.win.img, 0, 0);
+	draw_fractol(&f);
+	mlx_hook(f.win.window, 2, 0, push_key, &f);
+	mlx_loop(f.win.mlx);
 	return (0);
 }

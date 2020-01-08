@@ -14,10 +14,10 @@ add_library(libmlx STATIC
         minilibx_macos/mlx_xpm.c
         minilibx_macos/mlx_int_str_to_wordtab.c)
 
-add_compile_options (-Wall -Werror -Wextra -g)
+add_compile_options (-Wall -Werror -Wextra -g -O2)
 
 add_executable(fractol
         fractol.h
-        main.c keyboard_control.c complex_number.c draw_fractol.c)
+        main.c keyboard_control.c complex_number.c draw_fractol.c parce.c)
 
 target_link_libraries(fractol libmlx "-framework OpenGL" "-framework AppKit")

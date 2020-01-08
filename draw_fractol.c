@@ -6,53 +6,54 @@
 /*   By: mdirect <mdirect@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/21 13:44:56 by mdirect           #+#    #+#             */
-/*   Updated: 2020/01/05 19:24:22 by mdirect          ###   ########.fr       */
+/*   Updated: 2020/01/08 17:11:24 by mdirect          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
 
-void		draw_fractol(t_param_window win)
+int		make_color(int i, t_fractol *f)
 {
-	t_complex_num min;
-	t_complex_num max;
-	t_complex_num delta;
-	t_complex_num c, z;
-	int x, y, i, max_i;
-	double t;
-	int r, g, b;
+	int		r;
+	int		g;
+	int		b;
+	double	t;
 
-	min = make_complex(-2.0, -2.0);
-	max = make_complex(2.0, 2.0);
-	delta = make_complex((max.re - min.re) / (SIZE_WIN_X - 1),
-			(max.im - min.im) / (SIZE_WIN_Y - 1));
+	t = (double)i/ (double)f->max_i;
+	r = (int)(9 * (1 - t) * (t * t * t) * 255);
+	g = (int)(15 * (1 - t) * (1 - t) * t * t * 255);
+	b = (int)(8.5 * (1 - t) * (1 - t) * (1 - t) * t * 255);
+	return ((r << 16) | (g << 8) | b);
+}
 
-	max_i = 100;
+void		draw_fractol(t_fractol *f)
+{
+	t_complex_num z;
+	int x;
+	int y;
+	int i;
+
 	y = 0;
-	while (y < SIZE_WIN_Y)
+	while (y < WIN_Y)
 	{
-		c.im = min.im + y * delta.im;
+		f->c.im = f->y + (double)y / 250;
 		x = 0;
-		while (x < SIZE_WIN_X)
+		while (x < WIN_X)
 		{
-			c.re = min.re + x * delta.re;
-			z = make_complex(c.re, c.im);
+			f->c.re = f->x + (double)x / 250;
+			z = make_complex(f->c.re, f->c.im);
 			i = 0;
-			while (modul_complex(z) <= 4 && i < max_i)
+			while (modul_complex(z) <= 4 && i < f->max_i)
 			{
-//				z = make_complex(z.re * z.re * z.re * z.re - 6 * z.re * z.re * z.im * z.im + z.im * z.im * z.im * z.im + c.re,
-//						4 * z.re * z.re * z.re * z.im - 4 * z.re * z.im * z.im * z.im + c.im);
-//				z = make_complex(z.re * z.re * z.re - 3 * z.re * z.im * z.im + c.re,
-//						3 * z.re * z.re * z.im - z.im * z.im * z.im + c.im);
-				z = make_complex(z.re * z.re - z.im * z.im + c.re,
-						2.0 * z.re * z.im + c.im);
+//				z = make_complex(z.re * z.re * z.re * z.re - 6 * z.re * z.re * z.im * z.im + z.im * z.im * z.im * z.im + f->c.re,
+//						4 * z.re * z.re * z.re * z.im - 4 * z.re * z.im * z.im * z.im + f->c.im);
+//				z = make_complex(z.re * z.re * z.re - 3 * z.re * z.im * z.im + f->c.re,
+//						3 * z.re * z.re * z.im - z.im * z.im * z.im + f->c.im);
+				z = make_complex(z.re * z.re - z.im * z.im + f->c.re,
+						2.0 * z.re * z.im + f->c.im);
 				i++;
 			}
-			t = (double)i/ (double)max_i;
-			r = (int)(9 * (1 - t) * (t * t * t) * 255);
-			g = (int)(15 * (1 - t) * (1 - t) * t * t * 255);
-			b = (int)(8.5 * (1 - t) * (1 - t) * (1 - t) * t * 255);
-			mlx_pixel_put(win.mlx, win.window, x, y, (r<<8)|(g<<4)|b);
+			mlx_pixel_put(f->win.mlx, f->win.window, x, y, make_color(i, f));
 			x++;
 		}
 		y++;
