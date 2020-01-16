@@ -6,7 +6,7 @@
 /*   By: mdirect <mdirect@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/21 12:43:06 by mdirect           #+#    #+#             */
-/*   Updated: 2020/01/08 17:07:57 by mdirect          ###   ########.fr       */
+/*   Updated: 2020/01/16 16:18:38 by mdirect          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,11 @@ typedef struct 		s_param_window
 
 }					t_param_window;
 
+typedef struct		s_mouse
+{
+	int				press_l;
+}					t_mouse;
+
 typedef struct		s_fractol
 {
 	t_param_window	win;
@@ -42,14 +47,32 @@ typedef struct		s_fractol
 	int 			max_i;
 	double 			x;
 	double 			y;
+	double 			color;
 	t_complex_num	c;
+	t_complex_num	j;
+	t_mouse			mouse;
 }					t_fractol;
 
 void				draw_fractol(t_fractol *f);
+void				push_control(t_fractol *f);
 int					push_key(int key, t_fractol *f);
+int					push_mouse(int key, int x, int y, void *param);
+int					repush_mouse(int key, int x, int y, void *param);
+int 				move_mouse(int x, int y, void *param);
 t_complex_num		make_complex(double re, double im);
 double				modul_complex(t_complex_num number);
 int					ft_parce_fractol(char *s);
 int					ft_usage(void);
+int					formula(t_fractol *f);
+void				change_formula(int key, t_fractol *f);
+int					julia(t_fractol *f);
+int					mandelbrot_2(t_fractol *f);
+int					mandelbrot_3(t_fractol *f);
+int					mandelbrot_4(t_fractol *f);
+int					mandelbrot_5(t_fractol *f);
+int					bird(t_fractol *f);
+int					burning_ship(t_fractol *f);
+int					mandelbar(t_fractol *f);
+
 
 #endif

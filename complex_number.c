@@ -23,5 +23,5 @@ t_complex_num		make_complex(double re, double im)
 
 double				modul_complex(t_complex_num number)
 {
-	return (number.re * number.re + number.im *  number.im);
+	return (number.re * number.re + number.im * number.im);
 }

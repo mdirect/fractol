@@ -28,7 +28,7 @@ int		ft_parce_fractol(char *s)
 		return (6);
 	if (*s == 'b' && *(s + 1) == 's' && !(*(s + 2)))
 		return (7);
-	if (*s == 'p' && !(*(s + 1)))
+	if (*s == 'm' && *(s + 1) == 'b' && !(*(s + 2)))
 		return (8);
 	return (0);
 }
@@ -43,6 +43,6 @@ int		ft_usage(void)
 	write(1, "m5 - Mandelbrot^5\n", 18);
 	write(1, "b  - Bird\n", 10);
 	write(1, "bs - Burning Ship\n", 18);
-	write(1, "p  - Paporotnik\n", 16);
+	write(1, "mb - Mandelbar\n", 16);
 	return (0);
 }

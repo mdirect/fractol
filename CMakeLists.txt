@@ -18,6 +18,6 @@ add_compile_options (-Wall -Werror -Wextra -g -O2)
 
 add_executable(fractol
         fractol.h
-        main.c keyboard_control.c complex_number.c draw_fractol.c parce.c)
+        main.c keyboard_control.c complex_number.c draw_fractol.c parce.c mandelbrot_julia.c others_fractols.c formula.c)
 
 target_link_libraries(fractol libmlx "-framework OpenGL" "-framework AppKit")
