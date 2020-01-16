@@ -6,7 +6,7 @@
 /*   By: mdirect <mdirect@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/21 13:00:20 by mdirect           #+#    #+#             */
-/*   Updated: 2020/01/16 16:37:05 by mdirect          ###   ########.fr       */
+/*   Updated: 2020/01/16 20:58:28 by mdirect          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,8 @@ int			push_mouse(int key, int x, int y, void *param)
 	(void)x;
 	(void)y;
 	f = (t_fractol *)param;
-//	if (key == 4 || key == 5)
-//		return (1);				/* change color */
+	if (key == 4 || key == 5)
+		zoom(key, (double)x, (double)y, f);
 	if (key == 1)
 		f->mouse.press_l = 1;
 	return (0);
@@ -86,4 +86,27 @@ int			repush_mouse(int key, int x, int y, void *param)
 	f = (t_fractol *)param;
 	f->mouse.press_l = 0;
 	return (0);
+}
+
+void		zoom(int key, double x, double y, t_fractol *f)
+{
+	int pre_z;
+
+	pre_z = f->zoom;
+//	x = x / f->zoom;
+//	y = y / f->zoom;
+	if (key == 4)
+	{
+		f->zoom += 50;
+		f->y =  (f->y + y / pre_z) * pre_z / f->zoom;
+		f->x =  (f->x + x / pre_z) * pre_z / f->zoom;
+	}
+	if (key == 5)
+	{
+		f->zoom -= 50;
+		f->y =  (f->y + y / pre_z) * pre_z / f->zoom;
+		f->x =  (f->x + x / pre_z) * pre_z / f->zoom;
+	}
+	mlx_clear_window(f->win.mlx, f->win.window);
+	draw_fractol(f);
 }

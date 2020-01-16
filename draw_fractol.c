@@ -34,11 +34,11 @@ void		draw_fractol(t_fractol *f)
 	y = 0;
 	while (y < WIN_Y)
 	{
-		f->c.im = f->y + (double)y / 250;
+		f->c.im = f->y + (double)y / f->zoom;
 		x = 0;
 		while (x < WIN_X)
 		{
-			f->c.re = f->x + (double)x / 250;
+			f->c.re = f->x + (double)x / f->zoom;
 			mlx_pixel_put(f->win.mlx, f->win.window, x, y,
 					make_color(formula(f), f));
 			x++;

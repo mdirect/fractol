@@ -6,7 +6,7 @@
 /*   By: mdirect <mdirect@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/21 12:43:06 by mdirect           #+#    #+#             */
-/*   Updated: 2020/01/16 16:18:38 by mdirect          ###   ########.fr       */
+/*   Updated: 2020/01/16 19:14:38 by mdirect          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ typedef struct		s_fractol
 {
 	t_param_window	win;
 	int 			type;
+	int 			zoom;
 	int 			max_i;
 	double 			x;
 	double 			y;
@@ -59,6 +60,7 @@ int					push_key(int key, t_fractol *f);
 int					push_mouse(int key, int x, int y, void *param);
 int					repush_mouse(int key, int x, int y, void *param);
 int 				move_mouse(int x, int y, void *param);
+void				zoom(int key, double x, double y, t_fractol *f);
 t_complex_num		make_complex(double re, double im);
 double				modul_complex(t_complex_num number);
 int					ft_parce_fractol(char *s);

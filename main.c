@@ -6,7 +6,7 @@
 /*   By: mdirect <mdirect@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/21 12:41:49 by mdirect           #+#    #+#             */
-/*   Updated: 2020/01/16 15:30:19 by mdirect          ###   ########.fr       */
+/*   Updated: 2020/01/16 19:14:38 by mdirect          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ int		main(int argc, char **argv)
 	f.x = -2.0;
 	f.y = -2.0;
 	f.color = 0.0;
+	f.zoom = 250;
 	f.j = make_complex(-0.4, 0.6);
 	mlx_put_image_to_window(f.win.mlx, f.win.window, f.win.img, 0, 0);
 	draw_fractol(&f);
