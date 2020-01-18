@@ -6,7 +6,7 @@
 /*   By: mdirect <mdirect@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/21 13:00:20 by mdirect           #+#    #+#             */
-/*   Updated: 2020/01/16 20:58:28 by mdirect          ###   ########.fr       */
+/*   Updated: 2020/01/18 17:45:33 by mdirect          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,23 +90,15 @@ int			repush_mouse(int key, int x, int y, void *param)
 
 void		zoom(int key, double x, double y, t_fractol *f)
 {
-	int pre_z;
+	double pre_z;
 
 	pre_z = f->zoom;
-//	x = x / f->zoom;
-//	y = y / f->zoom;
 	if (key == 4)
-	{
-		f->zoom += 50;
-		f->y =  (f->y + y / pre_z) * pre_z / f->zoom;
-		f->x =  (f->x + x / pre_z) * pre_z / f->zoom;
-	}
+		f->zoom *= 1.1;
 	if (key == 5)
-	{
-		f->zoom -= 50;
-		f->y =  (f->y + y / pre_z) * pre_z / f->zoom;
-		f->x =  (f->x + x / pre_z) * pre_z / f->zoom;
-	}
+		f->zoom /= 1.1;
+	f->x = f->x + (x / pre_z + f->x) - (x / f->zoom + f->x);
+	f->y = f->y + (y / pre_z + f->y) - (y / f->zoom + f->y);
 	mlx_clear_window(f->win.mlx, f->win.window);
 	draw_fractol(f);
 }

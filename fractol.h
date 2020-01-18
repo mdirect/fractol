@@ -6,20 +6,37 @@
 /*   By: mdirect <mdirect@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/21 12:43:06 by mdirect           #+#    #+#             */
-/*   Updated: 2020/01/16 19:14:38 by mdirect          ###   ########.fr       */
+/*   Updated: 2020/01/18 20:02:42 by mdirect          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #ifndef FRACTOL_FRACTOL_H
 # define FRACTOL_FRACTOL_H
 # define WIN_X 1001
 # define WIN_Y 1001
+# define MAX_SOURCE_SIZE 10000
+# ifdef cl_khr_fp64
+#  pragma OPENCL EXTENSION cl_khr_fp64 : enable
+# elif defined(cl_amd_fp64)
+#  pragma OPENCL EXTENSION cl_amd_fp64 : enable
+# endif
 
-#include "minilibx_macos/mlx.h"
-#include <math.h>
-#include <unistd.h>
-#include <stdlib.h>
+# include <OpenCL/opencl.h>
+# include "minilibx_macos/mlx.h"
+# include <math.h>
+# include <unistd.h>
+# include <stdlib.h>
+
+typedef struct 		s_cl
+{
+	cl_int				ret;
+	cl_context			context;
+	cl_command_queue	command_queue;
+	cl_platform_id		platforms;
+	cl_uint				num_platforms;
+	cl_device_id		device;
+	cl_uint				num_devices;
+}					t_cl;
 
 typedef struct		s_complex_num
 {
@@ -32,7 +49,8 @@ typedef struct 		s_param_window
 	void			*window;
 	void			*mlx;
 	void			*img;
-
+	int				*img_data;
+	int 			win_x;
 }					t_param_window;
 
 typedef struct		s_mouse
@@ -44,7 +62,7 @@ typedef struct		s_fractol
 {
 	t_param_window	win;
 	int 			type;
-	int 			zoom;
+	double 			zoom;
 	int 			max_i;
 	double 			x;
 	double 			y;
@@ -75,6 +93,10 @@ int					mandelbrot_5(t_fractol *f);
 int					bird(t_fractol *f);
 int					burning_ship(t_fractol *f);
 int					mandelbar(t_fractol *f);
-
+void				make_fractol(t_fractol *f);
+t_cl				start_cl(void);
+void 				compile_cl(t_cl *cl, t_fractol *f);
+void 				make_buf_cl(t_cl *cl, cl_kernel *kernel, t_fractol *f);
+void 				bin_cl(t_cl *cl, cl_kernel *kernel, cl_mem *memobj, t_fractol *f);
 
 #endif

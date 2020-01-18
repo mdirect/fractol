@@ -6,6 +6,8 @@ set(CMAKE_C_STANDARD 11)
 include_directories(.)
 include_directories(minilibx_macos)
 
+find_package(OpenCL REQUIRED)
+
 add_library(libmlx STATIC
         minilibx_macos/mlx_shaders.c
         minilibx_macos/mlx_new_window.m
@@ -18,6 +20,6 @@ add_compile_options (-Wall -Werror -Wextra -g -O2)
 
 add_executable(fractol
         fractol.h
-        main.c keyboard_control.c complex_number.c draw_fractol.c parce.c mandelbrot_julia.c others_fractols.c formula.c)
+        main.c keyboard_control.c complex_number.c draw_fractol.c parce.c mandelbrot_julia.c others_fractols.c formula.c f_open_cl.c)
 
-target_link_libraries(fractol libmlx "-framework OpenGL" "-framework AppKit")
+target_link_libraries(fractol libmlx "-framework OpenGL" "-framework AppKit" OpenCL::OpenCL)
