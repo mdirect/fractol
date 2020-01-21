@@ -43,7 +43,7 @@ int			ft_usage(void)
 	write(1, "m5 - Mandelbrot^5\n", 18);
 	write(1, "b  - Bird\n", 10);
 	write(1, "bs - Burning Ship\n", 18);
-	write(1, "mb - Mandelbar\n", 16);
+	write(1, "mb - Mandelbar\n", 15);
 	return (0);
 }
 

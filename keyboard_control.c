@@ -6,7 +6,7 @@
 /*   By: mdirect <mdirect@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/21 13:00:20 by mdirect           #+#    #+#             */
-/*   Updated: 2020/01/18 17:45:33 by mdirect          ###   ########.fr       */
+/*   Updated: 2020/01/21 09:21:47 by estel            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,7 @@ int			push_key(int key, t_fractol *f)
 		f->color += 0.01;
 	if ((key > 82 && key < 90) || key == 91)
 		change_formula(key, f);
-	mlx_clear_window(f->win.mlx, f->win.window);
-	draw_fractol(f);
+	bin_cl(f);
 	return (0);
 }
 
@@ -56,8 +55,7 @@ int 		move_mouse(int x, int y, void *param)
 	{
 		f->j.re = f->x + (double)x / 250;
 		f->j.im = f->y + (double)y / 250;
-		mlx_clear_window(f->win.mlx, f->win.window);
-		draw_fractol(f);
+		bin_cl(f);
 	}
 	return (0);
 }
@@ -99,6 +97,5 @@ void		zoom(int key, double x, double y, t_fractol *f)
 		f->zoom /= 1.1;
 	f->x = f->x + (x / pre_z + f->x) - (x / f->zoom + f->x);
 	f->y = f->y + (y / pre_z + f->y) - (y / f->zoom + f->y);
-	mlx_clear_window(f->win.mlx, f->win.window);
-	draw_fractol(f);
+	bin_cl(f);
 }

@@ -6,7 +6,7 @@
 /*   By: mdirect <mdirect@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/21 12:43:06 by mdirect           #+#    #+#             */
-/*   Updated: 2020/01/18 20:02:42 by mdirect          ###   ########.fr       */
+/*   Updated: 2020/01/21 09:12:13 by estel            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,14 @@ typedef struct 		s_cl
 	cl_uint				num_platforms;
 	cl_device_id		device;
 	cl_uint				num_devices;
+	cl_kernel 			kernel;
+	cl_mem 				memobj;
 }					t_cl;
 
 typedef struct		s_complex_num
 {
-	double			im;
-	double			re;
+	float			im;
+	float			re;
 }					t_complex_num;
 
 typedef struct 		s_param_window
@@ -62,14 +64,15 @@ typedef struct		s_fractol
 {
 	t_param_window	win;
 	int 			type;
-	double 			zoom;
-	int 			max_i;
-	double 			x;
-	double 			y;
-	double 			color;
+	float 			zoom;
+	int				max_i;
+	float 			x;
+	float 			y;
+	float 			color;
 	t_complex_num	c;
 	t_complex_num	j;
 	t_mouse			mouse;
+	t_cl			cl;
 }					t_fractol;
 
 void				draw_fractol(t_fractol *f);
@@ -95,8 +98,8 @@ int					burning_ship(t_fractol *f);
 int					mandelbar(t_fractol *f);
 void				make_fractol(t_fractol *f);
 t_cl				start_cl(void);
-void 				compile_cl(t_cl *cl, t_fractol *f);
-void 				make_buf_cl(t_cl *cl, cl_kernel *kernel, t_fractol *f);
-void 				bin_cl(t_cl *cl, cl_kernel *kernel, cl_mem *memobj, t_fractol *f);
+void 				compile_cl(t_fractol *f);
+void 				make_buf_cl(t_fractol *f);
+void 				bin_cl(t_fractol *f);
 
 #endif

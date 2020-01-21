@@ -6,7 +6,7 @@
 /*   By: mdirect <mdirect@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/18 17:48:39 by mdirect           #+#    #+#             */
-/*   Updated: 2020/01/18 20:10:32 by mdirect          ###   ########.fr       */
+/*   Updated: 2020/01/21 23:29:54 by estel            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,12 @@ t_cl	start_cl(void)
 	return (cl);
 }
 
-void 	compile_cl(t_cl *cl, t_fractol *f)
+void 	compile_cl(t_fractol *f)
 {
 	cl_program 	program = NULL;
-	cl_kernel 	kernel = NULL;
 	int 		fd;
 	size_t 		source_size;
 	char 		*source_str;
-
 
 	fd = open("../open_cl.cl", O_RDONLY);
 	if (!fd)
@@ -44,36 +42,50 @@ void 	compile_cl(t_cl *cl, t_fractol *f)
 	source_size = read(fd, source_str, MAX_SOURCE_SIZE);
 	close(fd);
 
-	program = clCreateProgramWithSource(cl->context, 1, (const char **)&source_str,
-			(const size_t *)&source_size, &cl->ret);
-	cl->ret = clBuildProgram(program, 1, &cl->device, NULL, NULL, NULL);
-	if (cl->ret)
+	f->cl.kernel = NULL;
+	program = clCreateProgramWithSource(f->cl.context, 1, (const char **)&source_str,
+			(const size_t *)&source_size, &f->cl.ret);
+	printf("ret=%d\n", f->cl.ret);
+	f->cl.ret = clBuildProgram(program, 1, &f->cl.device, NULL, NULL, NULL);
+	printf("ret=%d\n", f->cl.ret);
+	if (f->cl.ret)
 		write(1, "!Wrong RET!\n", 12);
-	kernel = clCreateKernel(program, "test", &cl->ret);
-	make_buf_cl(cl, &kernel, f);
+	f->cl.kernel = clCreateKernel(program, "test", &f->cl.ret);
+	make_buf_cl(f);
 }
 
-void 	make_buf_cl(t_cl *cl, cl_kernel *kernel, t_fractol *f)
+void 	make_buf_cl(t_fractol *f)
 {
-	cl_mem	memobj = NULL;
-
-	memobj = clCreateBuffer(cl->context, CL_MEM_READ_WRITE,
-			(WIN_X * WIN_Y) * sizeof(cl_int), NULL, &cl->ret);
-	cl->ret = clEnqueueWriteBuffer(cl->command_queue, memobj, CL_TRUE, 0,
+	f->cl.memobj = clCreateBuffer(f->cl.context, CL_MEM_READ_WRITE,
+			(WIN_X * WIN_Y) * sizeof(cl_int), NULL, &f->cl.ret);
+	f->cl.ret = clEnqueueWriteBuffer(f->cl.command_queue, f->cl.memobj, CL_TRUE, 0,
 			(WIN_X * WIN_Y) * sizeof(cl_int), f->win.img_data, 0, NULL, NULL);
-	cl->ret = clSetKernelArg(*kernel, 0, sizeof(cl_mem), (void *)&memobj);
-	bin_cl(cl, kernel, &memobj, f);
+	printf("ret=%d\n", f->cl.ret);
+	f->cl.ret = clSetKernelArg(f->cl.kernel, 0, sizeof(cl_mem), (void *)&f->cl.memobj);
+	printf("ret=%d\n", f->cl.ret);
+	bin_cl(f);
 }
 
-void 	bin_cl(t_cl *cl, cl_kernel *kernel, cl_mem *memobj, t_fractol *f)
+void 	cl_arg(t_fractol *f)
+{
+	f->cl.ret = clSetKernelArg(f->cl.kernel, 1, sizeof(f->x), (void *)&f->x);
+	f->cl.ret = clSetKernelArg(f->cl.kernel, 2, sizeof(f->y), (void *)&f->y);
+	f->cl.ret = clSetKernelArg(f->cl.kernel, 3, sizeof(f->zoom), (void *)&f->zoom);
+	f->cl.ret = clSetKernelArg(f->cl.kernel, 4, sizeof(f->type), (void *)&f->type);
+	f->cl.ret = clSetKernelArg(f->cl.kernel, 5, sizeof(f->j.re), (void *)&f->j.re);
+	f->cl.ret = clSetKernelArg(f->cl.kernel, 6, sizeof(f->j.im), (void *)&f->j.im);
+	f->cl.ret = clSetKernelArg(f->cl.kernel, 7, sizeof(f->max_i), (void *)&f->max_i);
+	f->cl.ret = clSetKernelArg(f->cl.kernel, 8, sizeof(f->color), (void *)&f->color);
+}
+void 	bin_cl(t_fractol *f)
 {
 	size_t global_work_size[1] = { WIN_X * WIN_Y };
 
-	cl->ret = clEnqueueNDRangeKernel(cl->command_queue, *kernel, 1, NULL,
+	cl_arg(f);
+	f->cl.ret = clEnqueueNDRangeKernel(f->cl.command_queue, f->cl.kernel, 1, NULL,
 			global_work_size, NULL, 0, NULL, NULL);
-	printf("ret=%d\n", cl->ret);
-	cl->ret = clEnqueueReadBuffer(cl->command_queue, *memobj, CL_TRUE, 0,
+	f->cl.ret = clEnqueueReadBuffer(f->cl.command_queue, f->cl.memobj, CL_TRUE, 0,
 			(WIN_X * WIN_Y) * sizeof(cl_int), f->win.img_data, 0, NULL, NULL);
-	printf("ret=%d\n", cl->ret);
-	printf("%d\n", f->win.img_data[0]);
+	printf("ret=%d\n\n", f->cl.ret);
+	mlx_put_image_to_window(f->win.mlx, f->win.window, f->win.img, 0, 0);
 }
