@@ -6,7 +6,7 @@
 /*   By: mdirect <mdirect@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/18 17:48:39 by mdirect           #+#    #+#             */
-/*   Updated: 2020/01/22 14:37:03 by mdirect          ###   ########.fr       */
+/*   Updated: 2020/01/22 19:48:13 by mdirect          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void		compile_cl(t_fractol *f)
 	size_t		source_size;
 	char		*source_str;
 
-	if (!(fd = open("../open_cl.cl", O_RDONLY)))
+	if (!(fd = open("open_cl.cl", O_RDONLY)))
 	{
 		write(1, "Failed to load kernel.\n", 23);
 		exit(-1);
@@ -50,6 +50,7 @@ void		compile_cl(t_fractol *f)
 	ret_error(f->cl.ret);
 	f->cl.kernel = clCreateKernel(f->cl.prog, "draw", &f->cl.ret);
 	ret_error(f->cl.ret);
+	free(source_str);
 	make_buf_cl(f);
 }
 
@@ -93,7 +94,8 @@ void		cl_arg(t_fractol *f)
 
 void		draw_cl(t_fractol *f)
 {
-	size_t global_work_size[1];
+	size_t		global_work_size[1];
+	char		*text;
 
 	cl_arg(f);
 	global_work_size[0] = WIN_X * WIN_Y;
@@ -108,6 +110,8 @@ void		draw_cl(t_fractol *f)
 			"Help: Right MB");
 	mlx_string_put(f->win.mlx, f->win.window, 850, 980, 0xffffff,
 			"Iteration:");
+	text = ft_itoa(f->max_i);
 	mlx_string_put(f->win.mlx, f->win.window, 955, 980, 0xffffff,
-			ft_itoa(f->max_i));
+			text);
+	free(text);
 }
