@@ -69,8 +69,7 @@ __kernel void draw(__global int *pixel, float shift_x, float shift_y, float zoom
 		}
 		i++;
 	}
-	t = (float)i / (float)max_i - color;
-	t = (t > 0) ? t : -t;
+	t = fabs((float)i / (float)max_i - color);
 	r = (unsigned int)(9 * (1 - t) * t * t * t * 255);
 	g = (unsigned int)(15 * (1 - t) * (1 - t) * t * t * 255);
 	b = (unsigned int)(8.5 * (1 - t) * (1 - t) * (1 - t) * t * 255);
