@@ -1,30 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_strncmp.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdirect <mdirect@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/12/21 12:41:49 by mdirect           #+#    #+#             */
-/*   Updated: 2020/01/22 12:24:45 by mdirect          ###   ########.fr       */
+/*   Created: 2019/09/12 17:51:34 by mdirect           #+#    #+#             */
+/*   Updated: 2019/09/12 18:56:04 by mdirect          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fractol.h"
+#include "libft.h"
 
-int		main(int argc, char **argv)
+int		ft_strncmp(const char *s1, const char *s2, size_t n)
 {
-	t_fractol	f;
+	size_t i;
 
-	if (argc == 1)
-		return (ft_usage());
-	else if (argc == 2)
-		f.type = init_fractol(argv[1]);
-	else
-		return (write(1, "many parametrs\n", 15));
-	create_fractol(&f);
-	compile_cl(&f);
-	push_control(&f);
-	mlx_loop(f.win.mlx);
+	i = 0;
+	while ((s1[i] && i < n) || (s2[i] && i < n))
+	{
+		if (s1[i] != s2[i])
+			return (((unsigned char *)s1)[i] - ((unsigned char *)s2)[i]);
+		i++;
+	}
 	return (0);
 }

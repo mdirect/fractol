@@ -6,86 +6,108 @@
 /*   By: mdirect <mdirect@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/18 17:48:39 by mdirect           #+#    #+#             */
-/*   Updated: 2020/01/21 23:29:54 by estel            ###   ########.fr       */
+/*   Updated: 2020/01/22 14:37:03 by mdirect          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
-#include <stdio.h>
 
-t_cl	start_cl(void)
+t_cl		start_cl(void)
 {
 	t_cl	cl;
 
 	cl.ret = clGetPlatformIDs(1, &cl.platforms, &cl.num_platforms);
+	ret_error(cl.ret);
 	cl.ret = clGetDeviceIDs(cl.platforms, CL_DEVICE_TYPE_DEFAULT, 1,
 			&cl.device, &cl.num_devices);
+	ret_error(cl.ret);
 	cl.context = clCreateContext(NULL, 1, &cl.device, NULL, NULL, &cl.ret);
+	ret_error(cl.ret);
 	cl.command_queue = clCreateCommandQueue(cl.context, cl.device, 0, &cl.ret);
+	ret_error(cl.ret);
 	return (cl);
 }
 
-void 	compile_cl(t_fractol *f)
+void		compile_cl(t_fractol *f)
 {
-	cl_program 	program = NULL;
-	int 		fd;
-	size_t 		source_size;
-	char 		*source_str;
+	int			fd;
+	size_t		source_size;
+	char		*source_str;
 
-	fd = open("../open_cl.cl", O_RDONLY);
-	if (!fd)
+	if (!(fd = open("../open_cl.cl", O_RDONLY)))
 	{
-		fprintf(stderr, "Failed to load kernel.\n");
-		exit(1);
+		write(1, "Failed to load kernel.\n", 23);
+		exit(-1);
 	}
 	source_str = (char *)malloc(MAX_SOURCE_SIZE);
 	source_size = read(fd, source_str, MAX_SOURCE_SIZE);
 	close(fd);
-
-	f->cl.kernel = NULL;
-	program = clCreateProgramWithSource(f->cl.context, 1, (const char **)&source_str,
+	f->cl.prog = clCreateProgramWithSource(f->cl.context, 1,
+			(const char **)&source_str,
 			(const size_t *)&source_size, &f->cl.ret);
-	printf("ret=%d\n", f->cl.ret);
-	f->cl.ret = clBuildProgram(program, 1, &f->cl.device, NULL, NULL, NULL);
-	printf("ret=%d\n", f->cl.ret);
-	if (f->cl.ret)
-		write(1, "!Wrong RET!\n", 12);
-	f->cl.kernel = clCreateKernel(program, "test", &f->cl.ret);
+	ret_error(f->cl.ret);
+	f->cl.ret = clBuildProgram(f->cl.prog, 1, &f->cl.device, NULL, NULL, NULL);
+	ret_error(f->cl.ret);
+	f->cl.kernel = clCreateKernel(f->cl.prog, "draw", &f->cl.ret);
+	ret_error(f->cl.ret);
 	make_buf_cl(f);
 }
 
-void 	make_buf_cl(t_fractol *f)
+void		make_buf_cl(t_fractol *f)
 {
 	f->cl.memobj = clCreateBuffer(f->cl.context, CL_MEM_READ_WRITE,
 			(WIN_X * WIN_Y) * sizeof(cl_int), NULL, &f->cl.ret);
-	f->cl.ret = clEnqueueWriteBuffer(f->cl.command_queue, f->cl.memobj, CL_TRUE, 0,
-			(WIN_X * WIN_Y) * sizeof(cl_int), f->win.img_data, 0, NULL, NULL);
-	printf("ret=%d\n", f->cl.ret);
-	f->cl.ret = clSetKernelArg(f->cl.kernel, 0, sizeof(cl_mem), (void *)&f->cl.memobj);
-	printf("ret=%d\n", f->cl.ret);
-	bin_cl(f);
+	ret_error(f->cl.ret);
+	f->cl.ret = clEnqueueWriteBuffer(f->cl.command_queue, f->cl.memobj, CL_TRUE,
+			0, (WIN_X * WIN_Y) * sizeof(int), f->win.img_data, 0, NULL, NULL);
+	ret_error(f->cl.ret);
+	f->cl.ret = clSetKernelArg(f->cl.kernel, 0, sizeof(cl_mem),
+			(void *)&f->cl.memobj);
+	ret_error(f->cl.ret);
+	draw_cl(f);
 }
 
-void 	cl_arg(t_fractol *f)
+void		cl_arg(t_fractol *f)
 {
-	f->cl.ret = clSetKernelArg(f->cl.kernel, 1, sizeof(f->x), (void *)&f->x);
-	f->cl.ret = clSetKernelArg(f->cl.kernel, 2, sizeof(f->y), (void *)&f->y);
-	f->cl.ret = clSetKernelArg(f->cl.kernel, 3, sizeof(f->zoom), (void *)&f->zoom);
-	f->cl.ret = clSetKernelArg(f->cl.kernel, 4, sizeof(f->type), (void *)&f->type);
-	f->cl.ret = clSetKernelArg(f->cl.kernel, 5, sizeof(f->j.re), (void *)&f->j.re);
-	f->cl.ret = clSetKernelArg(f->cl.kernel, 6, sizeof(f->j.im), (void *)&f->j.im);
-	f->cl.ret = clSetKernelArg(f->cl.kernel, 7, sizeof(f->max_i), (void *)&f->max_i);
-	f->cl.ret = clSetKernelArg(f->cl.kernel, 8, sizeof(f->color), (void *)&f->color);
+	f->cl.ret = clSetKernelArg(f->cl.kernel, 1, sizeof(float), (void *)&f->x);
+	ret_error(f->cl.ret);
+	f->cl.ret = clSetKernelArg(f->cl.kernel, 2, sizeof(float), (void *)&f->y);
+	ret_error(f->cl.ret);
+	f->cl.ret = clSetKernelArg(f->cl.kernel, 3,
+			sizeof(float), (void *)&f->zoom);
+	ret_error(f->cl.ret);
+	f->cl.ret = clSetKernelArg(f->cl.kernel, 4, sizeof(int), (void *)&f->type);
+	ret_error(f->cl.ret);
+	f->cl.ret = clSetKernelArg(f->cl.kernel, 5,
+			sizeof(float), (void *)&f->j.re);
+	ret_error(f->cl.ret);
+	f->cl.ret = clSetKernelArg(f->cl.kernel, 6,
+			sizeof(float), (void *)&f->j.im);
+	ret_error(f->cl.ret);
+	f->cl.ret = clSetKernelArg(f->cl.kernel, 7, sizeof(int), (void *)&f->max_i);
+	ret_error(f->cl.ret);
+	f->cl.ret = clSetKernelArg(f->cl.kernel, 8,
+			sizeof(float), (void *)&f->color);
+	ret_error(f->cl.ret);
 }
-void 	bin_cl(t_fractol *f)
+
+void		draw_cl(t_fractol *f)
 {
-	size_t global_work_size[1] = { WIN_X * WIN_Y };
+	size_t global_work_size[1];
 
 	cl_arg(f);
-	f->cl.ret = clEnqueueNDRangeKernel(f->cl.command_queue, f->cl.kernel, 1, NULL,
-			global_work_size, NULL, 0, NULL, NULL);
-	f->cl.ret = clEnqueueReadBuffer(f->cl.command_queue, f->cl.memobj, CL_TRUE, 0,
-			(WIN_X * WIN_Y) * sizeof(cl_int), f->win.img_data, 0, NULL, NULL);
-	printf("ret=%d\n\n", f->cl.ret);
+	global_work_size[0] = WIN_X * WIN_Y;
+	f->cl.ret = clEnqueueNDRangeKernel(f->cl.command_queue, f->cl.kernel, 1,
+			NULL, global_work_size, NULL, 0, NULL, NULL);
+	ret_error(f->cl.ret);
+	f->cl.ret = clEnqueueReadBuffer(f->cl.command_queue, f->cl.memobj, CL_TRUE,
+			0, (WIN_X * WIN_Y) * sizeof(int), f->win.img_data, 0, NULL, NULL);
+	ret_error(f->cl.ret);
 	mlx_put_image_to_window(f->win.mlx, f->win.window, f->win.img, 0, 0);
+	mlx_string_put(f->win.mlx, f->win.window, 5, 980, 0xffffff,
+			"Help: Right MB");
+	mlx_string_put(f->win.mlx, f->win.window, 850, 980, 0xffffff,
+			"Iteration:");
+	mlx_string_put(f->win.mlx, f->win.window, 955, 980, 0xffffff,
+			ft_itoa(f->max_i));
 }

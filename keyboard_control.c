@@ -6,7 +6,7 @@
 /*   By: mdirect <mdirect@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/21 13:00:20 by mdirect           #+#    #+#             */
-/*   Updated: 2020/01/21 09:21:47 by estel            ###   ########.fr       */
+/*   Updated: 2020/01/22 15:03:41 by mdirect          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,60 @@ int			push_key(int key, t_fractol *f)
 	if (key == 53)
 		exit(0);
 	if (key == 78 || key == 27)
-		f->max_i -= 10;
+		f->max_i = ((f->max_i - 10) < 0) ? 0 : (f->max_i - 10);
 	if (key == 69 || key == 24)
 		f->max_i += 10;
+	if (key >= 124 && key <= 126)
+		key_move(key, f);
+	if (key == 12)
+		f->color -= 0.01;
+	if (key == 13)
+		f->color += 0.01;
+	if (key == 49)
+		f->press_space = !(f->press_space);
+	if (key == 11)
+		make_begin_params(f);
+	if ((key > 82 && key < 90) || key == 91)
+		change_formula(key, f);
+	draw_cl(f);
+	return (0);
+}
+
+void		change_formula(int key, t_fractol *f)
+{
+	if (key == 83)
+		f->type = 1;
+	if (key == 84)
+		f->type = 2;
+	if (key == 85)
+		f->type = 3;
+	if (key == 86)
+		f->type = 4;
+	if (key == 87)
+		f->type = 5;
+	if (key == 88)
+		f->type = 6;
+	if (key == 89)
+		f->type = 7;
+	if (key == 91)
+		f->type = 8;
+	make_begin_params(f);
+}
+
+void		make_begin_params(t_fractol *f)
+{
+	f->max_i = 200;
+	f->x = -2.0;
+	f->y = -2.0;
+	f->color = 0.0;
+	f->zoom = 250.0;
+	f->press_space = 0;
+	f->mouse.press_l = 0;
+	f->j = make_complex(-0.4, 0.6);
+}
+
+void		key_move(int key, t_fractol *f)
+{
 	if (key == 125)
 		f->y -= 0.04;
 	if (key == 126)
@@ -36,66 +87,4 @@ int			push_key(int key, t_fractol *f)
 		f->x += 0.04;
 	if (key == 124)
 		f->x -= 0.04;
-	if (key == 12)
-		f->color -= 0.01;
-	if (key == 13)
-		f->color += 0.01;
-	if ((key > 82 && key < 90) || key == 91)
-		change_formula(key, f);
-	bin_cl(f);
-	return (0);
-}
-
-int 		move_mouse(int x, int y, void *param)
-{
-	t_fractol *f;
-
-	f = (t_fractol *)param;
-	if (f->mouse.press_l && f->type == 1)
-	{
-		f->j.re = f->x + (double)x / 250;
-		f->j.im = f->y + (double)y / 250;
-		bin_cl(f);
-	}
-	return (0);
-}
-
-int			push_mouse(int key, int x, int y, void *param)
-{
-	t_fractol *f;
-
-	(void)x;
-	(void)y;
-	f = (t_fractol *)param;
-	if (key == 4 || key == 5)
-		zoom(key, (double)x, (double)y, f);
-	if (key == 1)
-		f->mouse.press_l = 1;
-	return (0);
-}
-
-int			repush_mouse(int key, int x, int y, void *param)
-{
-	t_fractol *f;
-
-	(void)x;
-	(void)y;
-	(void)key;
-	f = (t_fractol *)param;
-	f->mouse.press_l = 0;
-	return (0);
-}
-
-void		zoom(int key, double x, double y, t_fractol *f)
-{
-	double pre_z;
-
-	pre_z = f->zoom;
-	if (key == 4)
-		f->zoom *= 1.1;
-	if (key == 5)
-		f->zoom /= 1.1;
-	f->x = f->x + (x / pre_z + f->x) - (x / f->zoom + f->x);
-	f->y = f->y + (y / pre_z + f->y) - (y / f->zoom + f->y);
-	bin_cl(f);
 }

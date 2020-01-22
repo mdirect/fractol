@@ -1,30 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_putnbr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdirect <mdirect@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/12/21 12:41:49 by mdirect           #+#    #+#             */
-/*   Updated: 2020/01/22 12:24:45 by mdirect          ###   ########.fr       */
+/*   Created: 2019/09/14 19:42:45 by mdirect           #+#    #+#             */
+/*   Updated: 2019/09/14 19:42:52 by mdirect          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fractol.h"
+#include "libft.h"
 
-int		main(int argc, char **argv)
+void	ft_putnbr_fd(int n, int fd)
 {
-	t_fractol	f;
-
-	if (argc == 1)
-		return (ft_usage());
-	else if (argc == 2)
-		f.type = init_fractol(argv[1]);
+	if (n == -2147483648)
+	{
+		ft_putstr_fd("-2147483648", fd);
+		return ;
+	}
+	else if (n < 0)
+	{
+		ft_putchar_fd('-', fd);
+		ft_putnbr_fd(-1 * n, fd);
+	}
+	else if (n <= 9)
+		ft_putchar_fd(n + 48, fd);
 	else
-		return (write(1, "many parametrs\n", 15));
-	create_fractol(&f);
-	compile_cl(&f);
-	push_control(&f);
-	mlx_loop(f.win.mlx);
-	return (0);
+	{
+		ft_putnbr_fd(n / 10, fd);
+		ft_putnbr_fd(n % 10, fd);
+	}
 }

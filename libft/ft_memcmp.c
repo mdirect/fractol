@@ -1,30 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_memcmp.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdirect <mdirect@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/12/21 12:41:49 by mdirect           #+#    #+#             */
-/*   Updated: 2020/01/22 12:24:45 by mdirect          ###   ########.fr       */
+/*   Created: 2019/09/05 18:45:12 by mdirect           #+#    #+#             */
+/*   Updated: 2019/09/28 22:16:50 by mdirect          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fractol.h"
+#include "libft.h"
 
-int		main(int argc, char **argv)
+int		ft_memcmp(const void *s1, const void *s2, size_t n)
 {
-	t_fractol	f;
+	unsigned char *c1;
+	unsigned char *c2;
 
-	if (argc == 1)
-		return (ft_usage());
-	else if (argc == 2)
-		f.type = init_fractol(argv[1]);
-	else
-		return (write(1, "many parametrs\n", 15));
-	create_fractol(&f);
-	compile_cl(&f);
-	push_control(&f);
-	mlx_loop(f.win.mlx);
+	c1 = (unsigned char *)s1;
+	c2 = (unsigned char *)s2;
+	while (n--)
+	{
+		if (*c1 != *c2)
+			return (*c1 - *c2);
+		c1++;
+		c2++;
+	}
 	return (0);
 }

@@ -1,30 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_strcat.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdirect <mdirect@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/12/21 12:41:49 by mdirect           #+#    #+#             */
-/*   Updated: 2020/01/22 12:24:45 by mdirect          ###   ########.fr       */
+/*   Created: 2019/09/11 12:28:35 by mdirect           #+#    #+#             */
+/*   Updated: 2019/09/28 22:16:50 by mdirect          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fractol.h"
+#include "libft.h"
 
-int		main(int argc, char **argv)
+char	*ft_strcat(char *s1, const char *s2)
 {
-	t_fractol	f;
+	size_t n;
+	size_t i;
 
-	if (argc == 1)
-		return (ft_usage());
-	else if (argc == 2)
-		f.type = init_fractol(argv[1]);
-	else
-		return (write(1, "many parametrs\n", 15));
-	create_fractol(&f);
-	compile_cl(&f);
-	push_control(&f);
-	mlx_loop(f.win.mlx);
-	return (0);
+	n = ft_strlen(s1);
+	i = 0;
+	while (s2[i])
+	{
+		s1[n + i] = s2[i];
+		i++;
+	}
+	s1[n + i] = '\0';
+	return (s1);
 }

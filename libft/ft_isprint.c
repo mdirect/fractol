@@ -1,27 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   complex_number.c                                   :+:      :+:    :+:   */
+/*   ft_isprint.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdirect <mdirect@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/12/21 13:37:20 by mdirect           #+#    #+#             */
-/*   Updated: 2020/01/05 16:37:31 by mdirect          ###   ########.fr       */
+/*   Created: 2019/09/10 23:19:53 by mdirect           #+#    #+#             */
+/*   Updated: 2019/09/10 23:21:35 by mdirect          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fractol.h"
+#include "libft.h"
 
-t_complex_num		make_complex(double re, double im)
+int		ft_isprint(int c)
 {
-	t_complex_num number;
-
-	number.im = im;
-	number.re = re;
-	return (number);
-}
-
-double				modul_complex(t_complex_num number)
-{
-	return (number.re * number.re + number.im * number.im);
+	if (c > 31 && c < 127)
+		return (1);
+	return (0);
 }

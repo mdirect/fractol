@@ -1,30 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdirect <mdirect@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/12/21 12:41:49 by mdirect           #+#    #+#             */
-/*   Updated: 2020/01/22 12:24:45 by mdirect          ###   ########.fr       */
+/*   Created: 2019/09/07 09:50:20 by mdirect           #+#    #+#             */
+/*   Updated: 2019/09/28 22:16:50 by mdirect          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fractol.h"
+#include "libft.h"
 
-int		main(int argc, char **argv)
+char		*ft_itoa(int n)
 {
-	t_fractol	f;
+	char	*str;
+	int		len;
+	int		begin;
 
-	if (argc == 1)
-		return (ft_usage());
-	else if (argc == 2)
-		f.type = init_fractol(argv[1]);
-	else
-		return (write(1, "many parametrs\n", 15));
-	create_fractol(&f);
-	compile_cl(&f);
-	push_control(&f);
-	mlx_loop(f.win.mlx);
-	return (0);
+	len = ft_lenint(n);
+	if (!(str = ft_strnew(len)))
+		return (NULL);
+	begin = (n < 0) ? 1 : 0;
+	str[len] = '\0';
+	while (--len >= begin)
+	{
+		str[len] = (n < 0) ? (-1 * (n % 10) + '0') : ((n % 10) + '0');
+		n = n / 10;
+	}
+	if (begin == 1)
+		str[0] = '-';
+	return (str);
 }
