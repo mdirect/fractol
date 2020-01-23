@@ -28,7 +28,7 @@ int			push_key(int key, t_fractol *f)
 		f->max_i = ((f->max_i - 10) < 0) ? 0 : (f->max_i - 10);
 	if (key == 69 || key == 24)
 		f->max_i += 10;
-	if (key >= 124 && key <= 126)
+	if (key >= 123 && key <= 126)
 		key_move(key, f);
 	if (key == 12)
 		f->color -= 0.01;
